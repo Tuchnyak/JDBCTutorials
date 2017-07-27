@@ -9,7 +9,7 @@ public class JdbcUtils {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            throw new RuntimeException("Could not connect register driver" + e.getMessage());
+            throw new RuntimeException("********\nCould not connect register driver " + e.getMessage() + "\n********");
         }
     }
 
@@ -20,7 +20,7 @@ public class JdbcUtils {
                     "&useJDBCCompliantTimezoneShift=true&useLegacyDateTimeCode=false" +
                     "&serverTimezone=UTC", "root", "Y|p9!]Zu9-.|7Dm)LQ*;");
         } catch (SQLException e) {
-            throw new RuntimeException("Couldn't get connection " + e.getMessage());
+            throw new RuntimeException("********\nCould not get connection " + e.getMessage() + "\n********");
         }
     }
 
@@ -31,7 +31,7 @@ public class JdbcUtils {
             "last_name varchar(30) not null" +
             ")";
 
-    public static final String  CREATE_TABLE_POSTS = "create table if no exists POSTS (" +
+    public static final String CREATE_TABLE_POSTS = "create table if not exists POSTS (" +
             "postID int primary key auto_increment," +
             "title varchar(100) not null," +
             "text varchar(300) not null," +
@@ -49,22 +49,58 @@ public class JdbcUtils {
         }
     }
 
-//    public static void execute(String sql) {
-//        try (Connection connection = getConnection();
-//             Statement statement = connection.createStatement()){
-//            System.out.println(statement.executeUpdate(sql));
-//            ResultSet rs = statement.executeQuery("select * from user");
-//            while (rs.next()) {
-//
-//                int userId = rs.getInt("user_id");
-//                String login = rs.getString("login");
-//
-//                System.out.println("Id = " + userId + ", Login = " + login);
-//
-//            }
-//        } catch (SQLException e) {
-//            throw  new RuntimeException(e);
-//        }
-//    }
+    public static void teachersSelection() {
+        try (Connection connection = getConnection();
+        Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery("Select u.name, u.last_name, u.login," +
+                    "p.title, p. text, p.postID " +
+                    "from user as u, posts as p where u.userID = p.userID;");
+            while (rs.next()) {
+                String name = rs.getString("u.name");
+                String lastName = rs.getString("u.last_name");
+                String login = rs.getString("u.login");
+                String title = rs.getString("p.title");
+                String text = rs.getString("p.text");
+                int postID= rs.getInt("p.PostID");
+
+                System.out.println(name + " | " + lastName + " | " + login + " | "
+                        + title + " | " + text + " | " + postID);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static void showAllUserPosts() {
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement()) {
+
+            ResultSet rs = statement.executeQuery("select * from USER;");
+            while (rs.next()) {
+                int userID = rs.getInt("userID");
+                String login = rs.getString("login");
+                String name = rs.getString("name");
+                String lastName = rs.getString("last_name");
+
+                System.out.println("User ID: " + userID + " Login: " + login +
+                        " Name: " + name + " Last name: " + lastName);
+            }
+
+            rs = statement.executeQuery("select * from POSTS;");
+            while (rs.next()) {
+                int postID = rs.getInt("postID");
+                String title = rs.getString("title");
+                String text = rs.getString("text");
+                Date postedAt = rs.getDate("postedAt");
+                int userID = rs.getInt("userID");
+
+                System.out.println("Post ID: " + postID + " Title: " + title + " Text: " + text +
+                " Posted at: " + postedAt + " User ID: " + userID);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
 }
