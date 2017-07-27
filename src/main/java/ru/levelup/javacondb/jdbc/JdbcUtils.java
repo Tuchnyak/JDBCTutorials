@@ -19,22 +19,40 @@ public class JdbcUtils {
             return DriverManager.getConnection("jdbc:mysql://localhost:3306/posts?useSSL=false" +
                     "&useJDBCCompliantTimezoneShift=true&useLegacyDateTimeCode=false" +
                     "&serverTimezone=UTC", "root", "Y|p9!]Zu9-.|7Dm)LQ*;");
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Couldn't get connection " + e.getMessage());
         }
     }
 
-    public static final String CREATE_TABLE_USER = "create table if not exists user (" +
-            "user_id int primary key auto_increment," +
+    public static final String CREATE_TABLE_USER = "create table if not exists USER (" +
+            "userID int primary key auto_increment," +
             "login varchar(20) unique not null," +
             "name varchar(30) not null," +
             "last_name varchar(30) not null" +
             ")";
 
+    public static final String  CREATE_TABLE_POSTS = "create table if no exists POSTS (" +
+            "postID int primary key auto_increment," +
+            "title varchar(100) not null," +
+            "text varchar(300) not null," +
+            "postedAt timestamp not null," +
+            "userID int not null," +
+            "foreign key (userID) references USER(userID)" +
+            ")";
+
     public static void execute(String sql) {
         try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()){
+             Statement statement = connection.createStatement()) {
             System.out.println(statement.executeUpdate(sql));
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+//    public static void execute(String sql) {
+//        try (Connection connection = getConnection();
+//             Statement statement = connection.createStatement()){
+//            System.out.println(statement.executeUpdate(sql));
 //            ResultSet rs = statement.executeQuery("select * from user");
 //            while (rs.next()) {
 //
@@ -44,9 +62,9 @@ public class JdbcUtils {
 //                System.out.println("Id = " + userId + ", Login = " + login);
 //
 //            }
-        } catch (SQLException e) {
-            throw  new RuntimeException(e);
-        }
-    }
+//        } catch (SQLException e) {
+//            throw  new RuntimeException(e);
+//        }
+//    }
 
 }
