@@ -11,4 +11,15 @@ public class RandomIntegerExample {
     @RandomInteger(max = 200)
     private int valueWithoutMin;
 
+    public int getValue() {
+        return value;
+    }
+
+    public int getValueWithoutMax() {
+        return valueWithoutMax;
+    }
+
+    public int getValueWithoutMin() {
+        return valueWithoutMin;
+    }
 }
