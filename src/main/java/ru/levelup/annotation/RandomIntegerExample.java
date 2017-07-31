@@ -15,6 +15,8 @@ public class RandomIntegerExample {
         return value;
     }
 
+    public RandomIntegerExample () {}
+
     public int getValueWithoutMax() {
         return valueWithoutMax;
     }

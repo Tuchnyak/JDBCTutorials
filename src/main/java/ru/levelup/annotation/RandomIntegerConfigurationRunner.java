@@ -5,9 +5,13 @@ import java.lang.reflect.*;
 
 public class RandomIntegerConfigurationRunner {
 
-    public static void configure() {
+    public static void configure(RandomIntegerExample example) {
 
-        Class exampleClass = RandomIntegerExample.class.getClass();
+//        Class classOfC = RandomIntegerConfigurationRunner.class.getClass();
+//        Package packageOfT = classOfC.getPackage();
+
+//        Class exampleClass = RandomIntegerExample.class.getClass();
+        Class exampleClass = example.getClass();
         Field[] declaredFields = exampleClass.getDeclaredFields();
 
         for (Field f : declaredFields) {
@@ -29,7 +33,7 @@ public class RandomIntegerConfigurationRunner {
                             maxVal = (int) aMax.invoke(a);
                             random = (int) (minVal + Math.random() * (maxVal - minVal + 1));
                             f.setAccessible(true);
-                            f.set(exampleClass, random);
+                            f.set(example, random);
                         } catch (NoSuchMethodException e) {
                             e.printStackTrace();
                         } catch (IllegalAccessException e) {
@@ -52,7 +56,7 @@ public class RandomIntegerConfigurationRunner {
 
         RandomIntegerExample example = new RandomIntegerExample();
 
-        RandomIntegerConfigurationRunner.configure();
+        configure(example);
 
         System.out.println(example.getValue() + " " + example.getValueWithoutMax() + " " + example.getValueWithoutMin());
 
@@ -89,7 +93,6 @@ public class RandomIntegerConfigurationRunner {
 //        for (Field f : fields) {
 //            System.out.println(f.get(example) + "***********************");
 //        }
-
 
     }
 
